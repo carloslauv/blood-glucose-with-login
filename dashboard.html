@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Blood Glucose Tracker - Dashboard</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="dashboard-page">
+
+  <!-- Navigation -->
+  <nav class="navbar">
+    <div class="nav-brand">
+      <span class="nav-logo">&#9679;</span>
+      Blood Glucose Tracker
+    </div>
+    <div class="nav-user">
+      <span id="nav-username"></span>
+      <button id="logout-btn" class="btn btn-outline btn-sm">Logout</button>
+    </div>
+  </nav>
+
+  <main class="dashboard-main">
+
+    <!-- Stats Cards -->
+    <section class="stats-section">
+      <h2 class="section-title">Your Stats</h2>
+      <div class="stats-grid" id="stats-grid">
+        <div class="stat-card">
+          <div class="stat-label">Total Readings</div>
+          <div class="stat-value" id="stat-count">--</div>
+        </div>
+        <div class="stat-card stat-avg">
+          <div class="stat-label">Average</div>
+          <div class="stat-value" id="stat-avg">-- <span class="stat-unit">mg/dL</span></div>
+        </div>
+        <div class="stat-card stat-min">
+          <div class="stat-label">Minimum</div>
+          <div class="stat-value" id="stat-min">-- <span class="stat-unit">mg/dL</span></div>
+        </div>
+        <div class="stat-card stat-max">
+          <div class="stat-label">Maximum</div>
+          <div class="stat-value" id="stat-max">-- <span class="stat-unit">mg/dL</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Log New Reading -->
+    <section class="log-section">
+      <h2 class="section-title">Log a Reading</h2>
+      <div class="card">
+        <form id="glucose-form" novalidate>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="glucose-value">Blood Glucose (mg/dL)</label>
+              <input
+                type="number"
+                id="glucose-value"
+                name="glucose-value"
+                placeholder="e.g. 95"
+                min="20"
+                max="600"
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="glucose-datetime">Date &amp; Time</label>
+              <input
+                type="datetime-local"
+                id="glucose-datetime"
+                name="glucose-datetime"
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="meal-context">Meal Context</label>
+              <select id="meal-context" name="meal-context" required>
+                <option value="">-- Select --</option>
+                <option value="fasting">Fasting</option>
+                <option value="before_meal">Before Meal</option>
+                <option value="after_meal">After Meal</option>
+                <option value="bedtime">Bedtime</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="glucose-notes">Notes (optional)</label>
+            <input
+              type="text"
+              id="glucose-notes"
+              name="glucose-notes"
+              placeholder="Any additional notes..."
+            />
+          </div>
+
+          <div id="glucose-error" class="error-message hidden"></div>
+          <div id="glucose-success" class="success-message hidden"></div>
+
+          <button type="submit" class="btn btn-primary">Add Reading</button>
+        </form>
+      </div>
+    </section>
+
+    <!-- Readings History -->
+    <section class="history-section">
+      <div class="section-header">
+        <h2 class="section-title">Reading History</h2>
+        <button id="clear-all-btn" class="btn btn-danger btn-sm">Clear All</button>
+      </div>
+
+      <div class="card" id="readings-container">
+        <div id="no-readings" class="empty-state">
+          <p>No readings logged yet. Add your first reading above.</p>
+        </div>
+
+        <div id="readings-table-wrapper" class="hidden">
+          <table class="readings-table" id="readings-table">
+            <thead>
+              <tr>
+                <th>Date &amp; Time</th>
+                <th>Value (mg/dL)</th>
+                <th>Status</th>
+                <th>Meal Context</th>
+                <th>Notes</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="readings-tbody">
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Confirm Delete Modal -->
+  <div id="confirm-modal" class="modal-overlay hidden">
+    <div class="modal">
+      <h3>Delete Reading?</h3>
+      <p>Are you sure you want to delete this reading? This cannot be undone.</p>
+      <div class="modal-actions">
+        <button id="confirm-cancel" class="btn btn-outline">Cancel</button>
+        <button id="confirm-delete" class="btn btn-danger">Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
