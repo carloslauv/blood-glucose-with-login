@@ -14,6 +14,12 @@ export function DashboardNav({ user }: { user: User | undefined }) {
       </Link>
 
       <div className="flex items-center gap-4">
+        <Link
+          href="/dashboard/simulate"
+          className="text-sm text-white/50 hover:text-white transition-colors hidden sm:block"
+        >
+          Simulator
+        </Link>
         {user?.name && (
           <span className="text-sm text-white/40 hidden sm:block">
             {user.name}
