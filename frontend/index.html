@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Blood Glucose Tracker — Login</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: system-ui, sans-serif; background: #f0f4f8; display: flex; align-items: center; justify-content: center; min-height: 100vh; }
+    .card { background: white; border-radius: 12px; box-shadow: 0 4px 24px rgba(0,0,0,0.1); width: 100%; max-width: 420px; padding: 2rem; }
+    h1 { text-align: center; color: #1a73e8; margin-bottom: 0.25rem; font-size: 1.5rem; }
+    .subtitle { text-align: center; color: #666; margin-bottom: 1.5rem; font-size: 0.9rem; }
+    .tabs { display: flex; border-bottom: 2px solid #e8eaf6; margin-bottom: 1.5rem; }
+    .tab { flex: 1; padding: 0.6rem; text-align: center; cursor: pointer; color: #666; font-weight: 500; border-bottom: 2px solid transparent; margin-bottom: -2px; }
+    .tab.active { color: #1a73e8; border-bottom-color: #1a73e8; }
+    .form-group { margin-bottom: 1rem; }
+    label { display: block; font-size: 0.85rem; color: #333; margin-bottom: 0.3rem; font-weight: 500; }
+    input { width: 100%; padding: 0.6rem 0.8rem; border: 1px solid #ddd; border-radius: 6px; font-size: 0.95rem; }
+    input:focus { outline: none; border-color: #1a73e8; box-shadow: 0 0 0 2px rgba(26,115,232,0.15); }
+    button[type="submit"] { width: 100%; padding: 0.75rem; background: #1a73e8; color: white; border: none; border-radius: 6px; font-size: 1rem; font-weight: 600; cursor: pointer; margin-top: 0.5rem; }
+    button[type="submit"]:hover { background: #1558b0; }
+    .error { color: #d32f2f; background: #ffebee; padding: 0.6rem 0.8rem; border-radius: 6px; font-size: 0.85rem; margin-bottom: 1rem; display: none; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>🩸 Blood Glucose Tracker</h1>
+    <p class="subtitle">Track your readings · Get AI-powered insights</p>
+
+    <div class="tabs">
+      <div class="tab active" onclick="showTab('login')">Sign In</div>
+      <div class="tab" onclick="showTab('register')">Register</div>
+    </div>
+
+    <div id="error-msg" class="error"></div>
+
+    <!-- Login Form -->
+    <form id="login-form" onsubmit="handleLogin(event)">
+      <div class="form-group">
+        <label>Username</label>
+        <input type="text" id="login-username" required autocomplete="username" />
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" id="login-password" required autocomplete="current-password" />
+      </div>
+      <button type="submit">Sign In</button>
+    </form>
+
+    <!-- Register Form -->
+    <form id="register-form" style="display:none" onsubmit="handleRegister(event)">
+      <div class="form-group">
+        <label>Username</label>
+        <input type="text" id="reg-username" required autocomplete="username" />
+      </div>
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" id="reg-email" required autocomplete="email" />
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" id="reg-password" required autocomplete="new-password" minlength="6" />
+      </div>
+      <button type="submit">Create Account</button>
+    </form>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    if (getToken()) window.location.href = "/dashboard.html";
+
+    function showTab(tab) {
+      document.getElementById("login-form").style.display = tab === "login" ? "block" : "none";
+      document.getElementById("register-form").style.display = tab === "register" ? "block" : "none";
+      document.querySelectorAll(".tab").forEach((el, i) => {
+        el.classList.toggle("active", (i === 0 && tab === "login") || (i === 1 && tab === "register"));
+      });
+      hideError();
+    }
+
+    function showError(msg) {
+      const el = document.getElementById("error-msg");
+      el.textContent = msg;
+      el.style.display = "block";
+    }
+
+    function hideError() {
+      document.getElementById("error-msg").style.display = "none";
+    }
+
+    async function handleLogin(e) {
+      e.preventDefault();
+      hideError();
+      try {
+        const data = await fetch(`${API_BASE}/auth/login`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            username: document.getElementById("login-username").value,
+            password: document.getElementById("login-password").value,
+          }),
+        }).then(async (r) => {
+          if (!r.ok) throw new Error((await r.json()).detail);
+          return r.json();
+        });
+        setToken(data.access_token);
+        window.location.href = "/dashboard.html";
+      } catch (err) {
+        showError(err.message);
+      }
+    }
+
+    async function handleRegister(e) {
+      e.preventDefault();
+      hideError();
+      try {
+        const data = await fetch(`${API_BASE}/auth/register`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            username: document.getElementById("reg-username").value,
+            email: document.getElementById("reg-email").value,
+            password: document.getElementById("reg-password").value,
+          }),
+        }).then(async (r) => {
+          if (!r.ok) throw new Error((await r.json()).detail);
+          return r.json();
+        });
+        setToken(data.access_token);
+        window.location.href = "/dashboard.html";
+      } catch (err) {
+        showError(err.message);
+      }
+    }
+  </script>
+</body>
+</html>

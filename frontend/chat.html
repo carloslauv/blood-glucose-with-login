@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Health Chat — Blood Glucose Tracker</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: system-ui, sans-serif; background: #f0f4f8; min-height: 100vh; display: flex; flex-direction: column; }
+    header { background: #1a73e8; color: white; padding: 1rem 2rem; display: flex; align-items: center; gap: 1rem; }
+    .back-link { color: rgba(255,255,255,0.85); text-decoration: none; font-size: 0.9rem; }
+    .back-link:hover { color: white; }
+    header h1 { font-size: 1.1rem; flex: 1; }
+    .chat-container { flex: 1; max-width: 760px; width: 100%; margin: 0 auto; display: flex; flex-direction: column; padding: 1.5rem 1rem; gap: 1rem; }
+    .messages { flex: 1; display: flex; flex-direction: column; gap: 1rem; overflow-y: auto; min-height: 300px; }
+    .message { max-width: 80%; }
+    .message.user { align-self: flex-end; }
+    .message.assistant { align-self: flex-start; }
+    .bubble { padding: 0.75rem 1rem; border-radius: 16px; font-size: 0.92rem; line-height: 1.55; white-space: pre-wrap; }
+    .message.user .bubble { background: #1a73e8; color: white; border-bottom-right-radius: 4px; }
+    .message.assistant .bubble { background: white; color: #333; border-bottom-left-radius: 4px; box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
+    .tools-used { margin-top: 0.4rem; display: flex; gap: 0.4rem; flex-wrap: wrap; }
+    .tool-badge { background: #e8f0fe; color: #1a73e8; padding: 0.15rem 0.55rem; border-radius: 20px; font-size: 0.72rem; font-weight: 600; font-family: monospace; }
+    .thinking { font-size: 0.82rem; color: #888; font-style: italic; align-self: flex-start; }
+    .suggestions { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.5rem; }
+    .suggestion { background: white; border: 1px solid #c5cae9; color: #3949ab; padding: 0.4rem 0.85rem; border-radius: 20px; font-size: 0.82rem; cursor: pointer; }
+    .suggestion:hover { background: #e8eaf6; }
+    .input-row { display: flex; gap: 0.5rem; }
+    #chat-input { flex: 1; padding: 0.7rem 1rem; border: 1px solid #ddd; border-radius: 24px; font-size: 0.95rem; }
+    #chat-input:focus { outline: none; border-color: #1a73e8; box-shadow: 0 0 0 2px rgba(26,115,232,0.15); }
+    #send-btn { background: #1a73e8; color: white; border: none; border-radius: 24px; padding: 0.7rem 1.4rem; font-size: 0.95rem; font-weight: 600; cursor: pointer; }
+    #send-btn:disabled { background: #b0bec5; cursor: not-allowed; }
+    .welcome { background: white; border-radius: 12px; padding: 1.25rem; font-size: 0.9rem; color: #555; line-height: 1.6; box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
+    .welcome strong { color: #1a73e8; }
+  </style>
+</head>
+<body>
+  <header>
+    <a class="back-link" href="/dashboard.html">← Dashboard</a>
+    <h1>🤖 AI Health Assistant</h1>
+  </header>
+
+  <div class="chat-container">
+    <div class="messages" id="messages">
+      <div class="welcome">
+        <strong>Hi! I'm your AI health assistant.</strong><br />
+        I can analyze your blood glucose data, identify trends, and provide insights. Ask me anything about your readings — I'll fetch your actual data before responding.<br /><br />
+        <em>I'm not a doctor. Always consult a healthcare professional for medical advice.</em>
+      </div>
+    </div>
+
+    <div class="suggestions" id="suggestions">
+      <button class="suggestion" onclick="sendSuggestion(this)">Analyze my recent glucose trends</button>
+      <button class="suggestion" onclick="sendSuggestion(this)">How are my fasting readings?</button>
+      <button class="suggestion" onclick="sendSuggestion(this)">Am I in a normal range overall?</button>
+      <button class="suggestion" onclick="sendSuggestion(this)">Compare my fasting vs post-meal levels</button>
+    </div>
+
+    <div class="input-row">
+      <input type="text" id="chat-input" placeholder="Ask about your blood glucose…" onkeydown="handleKey(event)" />
+      <button id="send-btn" onclick="sendMessage()">Send</button>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+  <script src="chat.js"></script>
+</body>
+</html>

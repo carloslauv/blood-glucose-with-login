@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard — Blood Glucose Tracker</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: system-ui, sans-serif; background: #f0f4f8; min-height: 100vh; }
+    header { background: #1a73e8; color: white; padding: 1rem 2rem; display: flex; align-items: center; justify-content: space-between; }
+    header h1 { font-size: 1.2rem; }
+    .header-right { display: flex; gap: 1rem; align-items: center; }
+    #username-display { font-size: 0.9rem; opacity: 0.9; }
+    .btn { padding: 0.4rem 1rem; border-radius: 6px; border: none; cursor: pointer; font-size: 0.9rem; font-weight: 500; }
+    .btn-chat { background: white; color: #1a73e8; }
+    .btn-logout { background: rgba(255,255,255,0.2); color: white; }
+    .btn-logout:hover { background: rgba(255,255,255,0.3); }
+    main { max-width: 900px; margin: 2rem auto; padding: 0 1rem; }
+    .card { background: white; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); padding: 1.5rem; margin-bottom: 1.5rem; }
+    h2 { font-size: 1.1rem; color: #333; margin-bottom: 1rem; }
+    .form-row { display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: flex-end; }
+    .form-group { display: flex; flex-direction: column; gap: 0.3rem; }
+    label { font-size: 0.82rem; color: #555; font-weight: 500; }
+    input, select, textarea { padding: 0.55rem 0.75rem; border: 1px solid #ddd; border-radius: 6px; font-size: 0.9rem; }
+    input[type="number"] { width: 120px; }
+    select { width: 140px; }
+    textarea { width: 200px; height: 38px; resize: none; font-size: 0.85rem; }
+    .btn-add { background: #1a73e8; color: white; padding: 0.55rem 1.2rem; border-radius: 6px; border: none; cursor: pointer; font-weight: 600; white-space: nowrap; }
+    .btn-add:hover { background: #1558b0; }
+    #add-error { color: #d32f2f; font-size: 0.82rem; margin-top: 0.5rem; display: none; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+    th { text-align: left; padding: 0.6rem 0.75rem; border-bottom: 2px solid #e8eaf6; color: #555; font-weight: 600; }
+    td { padding: 0.6rem 0.75rem; border-bottom: 1px solid #f0f4f8; vertical-align: middle; }
+    tr:last-child td { border-bottom: none; }
+    .badge { display: inline-block; padding: 0.2rem 0.6rem; border-radius: 20px; font-size: 0.78rem; font-weight: 600; }
+    .level-normal { background: #e8f5e9; color: #2e7d32; }
+    .level-warning { background: #fff3e0; color: #e65100; }
+    .level-high { background: #ffebee; color: #c62828; }
+    .level-low { background: #fffde7; color: #f57f17; }
+    .type-badge { background: #e8eaf6; color: #3949ab; padding: 0.15rem 0.5rem; border-radius: 4px; font-size: 0.78rem; }
+    .btn-delete { background: none; border: none; color: #bbb; cursor: pointer; font-size: 1rem; padding: 0.2rem 0.4rem; border-radius: 4px; }
+    .btn-delete:hover { color: #d32f2f; background: #ffebee; }
+    .empty-state { text-align: center; color: #aaa; padding: 2rem; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>🩸 Blood Glucose Tracker</h1>
+    <div class="header-right">
+      <span id="username-display"></span>
+      <button class="btn btn-chat" onclick="window.location.href='/chat.html'">💬 AI Chat</button>
+      <button class="btn btn-logout" onclick="logout()">Sign Out</button>
+    </div>
+  </header>
+
+  <main>
+    <!-- Add Reading -->
+    <div class="card">
+      <h2>Add Reading</h2>
+      <form id="add-form" onsubmit="handleAddReading(event)">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Glucose (mg/dL)</label>
+            <input type="number" id="glucose" min="1" max="600" step="0.1" required placeholder="e.g. 95" />
+          </div>
+          <div class="form-group">
+            <label>Type</label>
+            <select id="reading-type">
+              <option value="fasting">Fasting</option>
+              <option value="post_meal">Post-meal</option>
+              <option value="bedtime">Bedtime</option>
+              <option value="random">Random</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Date & Time</label>
+            <input type="datetime-local" id="recorded-at" />
+          </div>
+          <div class="form-group">
+            <label>Notes (optional)</label>
+            <textarea id="notes" placeholder="e.g. after lunch"></textarea>
+          </div>
+          <button class="btn-add" type="submit">Add</button>
+        </div>
+        <div id="add-error"></div>
+      </form>
+    </div>
+
+    <!-- Readings Table -->
+    <div class="card">
+      <h2>Your Readings</h2>
+      <div id="readings-container">
+        <div class="empty-state">Loading readings…</div>
+      </div>
+    </div>
+  </main>
+
+  <script src="app.js"></script>
+  <script src="dashboard.js"></script>
+</body>
+</html>
